@@ -4,9 +4,73 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.nhpoker</groupId>
 	<artifactId>structure-manager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
+	<properties>
+		<distrib.directory>dist</distrib.directory>
+	</properties>
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${distrib.directory}</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-rsrcs</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<copy todir="${distrib.directory}/rsrcs">
+									<fileset dir="rsrcs" />
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>copy-jvm</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<copy todir="${distrib.directory}/java">
+									<fileset dir="java" />
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>copy-scripts</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<copy todir="${distrib.directory}">
+									<fileset dir="scripts" />
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -24,6 +88,39 @@
 					<mainClass>fr.nhpoker.Main</mainClass>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${distrib.directory}/libs</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>data/*</exclude>
+					</excludes>
+					<outputDirectory>${distrib.directory}</outputDirectory>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>libs/</classpathPrefix>
+							<mainClass>fr.nhpoker.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -31,6 +128,11 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.airhacks</groupId>
+			<artifactId>afterburner.fx</artifactId>
+			<version>1.7.0</version>
 		</dependency>
 	</dependencies>
 </project>

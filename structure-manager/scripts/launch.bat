@@ -1,0 +1,1 @@
+java\bin\java.exe --module-path libs --add-modules javafx.controls -jar structure-manager-0.0.1.jar
