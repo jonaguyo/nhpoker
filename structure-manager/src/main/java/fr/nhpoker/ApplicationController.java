@@ -1,47 +1,30 @@
 package fr.nhpoker;
 
-import java.util.LinkedList;
+import java.io.File;
 
+import com.airhacks.afterburner.injection.Injector;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import fr.nhpoker.core.Player;
 import fr.nhpoker.core.PlayerList;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.util.Callback;
 
 public class ApplicationController
 {
-	public static final ListChangeListener<Player> listener = new ListChangeListener<Player>()
-	{
-		@Override
-		public void onChanged(Change<? extends Player> c)
-		{
-			System.out.println(c);
-		}
-	};
-	
-	public static final Callback<Player, Observable[]> callback = p -> new Observable[] { p.stackProperty() };
-	LinkedList<Player> test;
-	ObservableList<Player> testobs;
-	PlayerList players;
-	Player p = new Player(0, "pp", "PP");
+	private PlayerList players;
 	
 	public ApplicationController()
 	{
-		XStream xstream = new XStream();
+		XStream xstream = new XStream(new DomDriver());
 		xstream.autodetectAnnotations(true);
 		xstream.alias("player", Player.class);
 		xstream.alias("players", PlayerList.class);
 		xstream.addImplicitCollection(PlayerList.class, "players");
 		
-		players = new PlayerList();
-		test = new LinkedList<>();
-		testobs = FXCollections.observableList(test, callback);
-		testobs.addListener(listener);
-		testobs.add(p);
-		p.stackProperty().set(1000);
+		File playersFile = new File("rsrcs/data/players.xml");
+		players = (PlayerList) xstream.fromXML(playersFile);
+		System.out.println(players.getPlayers());
+		
+		System.out.println(xstream.toXML(players));
 	}
 }

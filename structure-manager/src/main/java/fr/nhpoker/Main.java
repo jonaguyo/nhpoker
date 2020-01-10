@@ -1,5 +1,8 @@
 package fr.nhpoker;
 
+import com.airhacks.afterburner.injection.Injector;
+
+import fr.nhpoker.gui.MainView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -16,12 +19,16 @@ public class Main extends Application
 	@Override
 	public void start(Stage stage) throws Exception
 	{
-		ApplicationController controller = new ApplicationController();
+		Injector.instantiateModelOrService(ApplicationController.class);
+//		ApplicationController controller = new ApplicationController();
 		
-		String javaVersion = System.getProperty("java.version");
-		String javafxVersion = System.getProperty("javafx.version");
-		Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-		Scene scene = new Scene(new StackPane(l), 640, 480);
+		MainView view = new MainView();
+		
+//		String javaVersion = System.getProperty("java.version");
+//		String javafxVersion = System.getProperty("javafx.version");
+//		Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
+//		Scene scene = new Scene(new StackPane(l), 640, 480);
+		Scene scene = new Scene(view.getView());
 		stage.setScene(scene);
 		stage.show();
 	}

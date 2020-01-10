@@ -1,10 +1,11 @@
 package fr.nhpoker.core;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class Player
+public class Player extends RecursiveTreeObject<Player>
 {
 	private int id;
 	
@@ -18,6 +19,8 @@ public class Player
 	
 	public Player(int id, String lastName, String firstName)
 	{
+		super();
+		
 		this.id = id;
 		this.lastName = lastName;
 		this.firstName = firstName;
@@ -43,9 +46,14 @@ public class Player
 		if(stackProperty == null)
 		{
 			stackProperty = new SimpleIntegerProperty(stack);
-			stackProperty.addListener((obs, o, n) -> stack = n.intValue());
 		}
 		
 		return stackProperty;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Player [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", stack=" + stack + "]";
 	}
 }
